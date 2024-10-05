@@ -1,6 +1,10 @@
 {
   "name": "docker-client-ts",
   "version": "0.0.1",
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=9"
+  },
   "scripts": {
     "prebuild": "rm -rf ./dist",
     "build": "esbuild --platform=node --outdir=dist ./src/** && tsc",
