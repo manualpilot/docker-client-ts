@@ -1,0 +1,6 @@
+.idea
+.env
+.envrc
+dist
+node_modules
+src
