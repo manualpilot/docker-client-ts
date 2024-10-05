@@ -1,0 +1,11 @@
+name: run tests
+
+on: [workflow_call]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: "actions/checkout@v4"
+      - run: "pnpm install"
+      - run: "pnpm run test"
