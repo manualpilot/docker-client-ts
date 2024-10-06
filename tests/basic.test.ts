@@ -8,7 +8,6 @@ test("DockerClient", async () => {
   // TODO: this returns transfer-encoding chunked
   await client.Image.Create({
     query: {
-      platform: "",  // TODO: fix defaults in query params
       fromImage: "hello-world",
       tag: "latest",
     },

@@ -20,11 +20,20 @@ export function applyFixes(schema) {
 
       // if an input type has a default value on the docker backend
       // then we want the option to omit it completely
-      if (
-        schema.definitions[definition].properties[property].default ||
-        schema.definitions[definition].properties[property].default === false
-      ) {
+      if (schema.definitions[definition].properties[property].hasOwnProperty("default")) {
         schema.definitions[definition].properties[property].default = undefined;
+      }
+    }
+  }
+
+  for (const path in schema.paths) {
+    for (const endpoint in schema.paths[path]) {
+      if (schema.paths[path][endpoint].parameters) {
+        for (const param of schema.paths[path][endpoint].parameters) {
+          if (param.hasOwnProperty("default")) {
+            param.default = undefined;
+          }
+        }
       }
     }
   }
