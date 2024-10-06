@@ -51,7 +51,7 @@ export default function {{ tag }}(pool: Pool) {
 {% for endpoint in endpoints %}
     {{ endpoint.name }}: async (
     {% if endpoint.input_type %}
-      input: z.infer<typeof {{ endpoint.input_name }}>,
+      input{% if endpoint.input_required %}?{% endif %}: z.infer<typeof {{ endpoint.input_name }}>,
     {% endif %}
     ): Promise<
     {% if endpoint.output_type %}
@@ -69,7 +69,7 @@ export default function {{ tag }}(pool: Pool) {
       path: "{{ endpoint.path }}",
       {% endif %}
       {% if endpoint.input_has_query %}
-      query: input.query,
+      query: input{% if endpoint.input_required %}?{% endif %}.query,
       {% endif %}
       headers: {
         {% if endpoint.input_has_body %}

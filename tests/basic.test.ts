@@ -1,4 +1,3 @@
-import * as console from "node:console";
 import { DockerClient } from "~/index.ts";
 
 test("DockerClient", async () => {
@@ -6,18 +5,20 @@ test("DockerClient", async () => {
   const systemInfo = await client.System.Info();
   expect(systemInfo.ID).toHaveLength(36);
 
+  // TODO: this returns transfer-encoding chunked
   await client.Image.Create({
     query: {
       platform: "",  // TODO: fix defaults in query params
       fromImage: "hello-world",
       tag: "latest",
     },
+    // TODO: support private registry auth header
   });
 
-  // TODO: is there a better way, do we have to use containerd?
+  // TODO: pull image is an streaming endpoint, shouldn't need this kind of check
   let found = false;
   while (!found) {
-    const resp = await client.Image.List({});
+    const resp = await client.Image.List();
     found = resp.find((i) => i.RepoTags?.includes('hello-world:latest')) !== undefined;
   }
 

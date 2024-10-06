@@ -157,6 +157,7 @@ async function main() {
       if ("input" in props) {
         attribs.input_name = `${name}Input`;
         attribs.input_type = jsonSchemaToZod(props.input);
+        attribs.input_required = inputRequired(props.input);
 
         if (props.input.properties.query) {
           attribs.input_has_query = true;
@@ -189,6 +190,15 @@ async function main() {
   for (const [filePath, content] of Object.entries(files)) {
     await writeFile(filePath, content, { flush: true, mode: 0o644 });
   }
+}
+
+function inputRequired(input) {
+  const { properties } = input;
+  const path = properties.path !== undefined;
+  const body = properties.body !== undefined;
+  const query = properties.query?.required;
+
+  return !(path || body || query);
 }
 
 (async () => await main())();
