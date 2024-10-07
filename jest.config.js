@@ -1,5 +1,5 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} **/
-module.exports = {
+export default {
   testEnvironment: "node",
   testTimeout: 120_000,
   extensionsToTreatAsEsm: [".ts"],

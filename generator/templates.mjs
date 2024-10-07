@@ -2,11 +2,9 @@
 const root = `
 import { Pool } from "undici";
 
-import {
 {% for tag in tags %}
- {{ tag }},
+import {{ tag }} from "~/tags/{{ tag | lower }}.ts"
 {% endfor %}
-} from "~/tags";
 
 export function DockerClient(base: URL) {
   let pool: Pool;
@@ -97,10 +95,4 @@ export default function {{ tag }}(pool: Pool) {
 }
 `;
 
-const tagsIndex = `
-{% for tag in tags %}
-export { default as {{tag}} } from "~/tags/{{ tag | lower }}.ts";
-{% endfor %}
-`;
-
-export const TEMPLATES = { root, tag, tagsIndex };
+export const TEMPLATES = { root, tag };

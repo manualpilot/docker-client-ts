@@ -2,25 +2,28 @@
   "compilerOptions": {
     "declaration": true,
     "emitDeclarationOnly": true,
-    "rootDir": "./src",
-    "declarationDir": "./dist",
-    "outDir": "./dist",
+    "rootDir": "src",
+    "baseUrl": ".",
+    "declarationDir": "dist",
+    "outDir": "dist",
     "composite": true,
-    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
+    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
     "strict": true,
     "target": "ESNext",
+    "module": "ESNext",
     "moduleResolution": "Node",
     "allowImportingTsExtensions": true,
     "allowSyntheticDefaultImports": true,
-    "lib": ["ESNext"],
-    "baseUrl": ".",
+    "lib": [
+      "ESNext"
+    ],
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": [
+        "src/*"
+      ]
     },
   },
-  "exclude": [
-    "./dist",
-    "./node_modules",
-    "./static",
+  "include": [
+    "src"
   ]
 }

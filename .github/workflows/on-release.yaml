@@ -1,0 +1,12 @@
+name: on release
+on:
+  release:
+    types: [published]
+
+jobs:
+  tests:
+    uses: .github/workflows/run-tests.yaml
+
+  release:
+    needs: tests
+    uses: .github/workflows/run-release.yaml

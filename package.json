@@ -1,6 +1,9 @@
 {
   "name": "docker-client-ts",
   "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
   "packageManager": "pnpm@9.10.0",
   "engines": {
     "node": ">=22",
@@ -8,8 +11,8 @@
   },
   "scripts": {
     "prebuild": "rm -rf ./dist",
-    "build": "esbuild --platform=node --outdir=dist ./src/** && tsc",
-    "postbuild": "cp ./package.json ./dist/",
+    "build": "esbuild --sourcemap --format=esm --platform=node --outdir=dist --log-level=debug './src/**/*.ts'",
+    "postbuild": "tsc",
     "format": "biome check --verbose --write --unsafe",
     "generate": "node ./generator/generator.mjs",
     "postgenerate": "pnpm run format",

@@ -139,10 +139,6 @@ async function main() {
     tags: Object.keys(byTag),
   });
 
-  files["./src/tags/index.ts"] = renderer.renderString(TEMPLATES.tagsIndex, {
-    tags: Object.keys(byTag),
-  });
-
   for (const [tag, endpoints] of Object.entries(byTag)) {
 
     const ctx = { tag, endpoints: [] };
