@@ -5,8 +5,12 @@ on:
 
 jobs:
   tests:
-    uses: .github/workflows/run-tests.yaml
+    steps:
+      - uses: actions/checkout@v4
+      - uses: .github/workflows/run-tests.yaml
 
   release:
     needs: tests
-    uses: .github/workflows/run-release.yaml
+    steps:
+    - uses: actions/checkout@v4
+    - uses: .github/workflows/run-release.yaml

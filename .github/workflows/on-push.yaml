@@ -3,4 +3,6 @@ on: [push]
 
 jobs:
   tests:
-    uses: .github/workflows/run-tests.yaml
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/workflows/run-tests.yaml
