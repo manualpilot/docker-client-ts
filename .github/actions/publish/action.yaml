@@ -25,3 +25,5 @@ runs:
         NODE_AUTH_TOKEN: ${{github.event.inputs.node-auth-token}}
     - run: pnpm publish --tag latest --no-git-checks --access=public
       shell: bash
+      env:
+        NODE_AUTH_TOKEN: ${{github.event.inputs.node-auth-token}}
