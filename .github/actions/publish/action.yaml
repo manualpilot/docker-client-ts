@@ -17,7 +17,7 @@ runs:
       env:
         NODE_AUTH_TOKEN: ${{github.event.inputs.node-auth-token}}
       run: |
-        echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
+        echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > .npmrc
         pnpm install --frozen-lockfile
         pnpm run generate
         pnpm run build

@@ -1,6 +1,7 @@
 .idea
 .env
 .envrc
+.npmrc
 dist
 node_modules
 src
