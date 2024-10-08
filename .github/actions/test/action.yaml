@@ -8,9 +8,8 @@ runs:
       with:
         node-version-file: package.json
     - uses: pnpm/action-setup@v4
-    - run: pnpm install --frozen-lockfile
-      shell: bash
-    - run: pnpm run generate
-      shell: bash
-    - run: pnpm run test
-      shell: bash
+    - shell: bash
+      run: |
+        pnpm install --frozen-lockfile
+        pnpm run generate
+        pnpm run test
