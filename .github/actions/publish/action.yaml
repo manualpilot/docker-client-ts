@@ -1,9 +1,5 @@
 name: run publish
 
-defaults:
-  run:
-    shell: bash
-
 runs:
   using: composite
   steps:
@@ -14,9 +10,14 @@ runs:
         registry-url: https://registry.npmjs.org
     - uses: pnpm/action-setup@v4
     - run: pnpm install --frozen-lockfile
+      shell: bash
     - run: pnpm run generate
+      shell: bash
     - run: pnpm run build
+      shell: bash
     - run: pnpm config set '//registry.npmjs.org/:_authToken' "${NODE_AUTH_TOKEN}"
+      shell: bash
       env:
         NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
     - run: pnpm publish --tag latest --access=public
+      shell: bash

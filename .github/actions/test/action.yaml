@@ -1,9 +1,5 @@
 name: run tests
 
-defaults:
-  run:
-    shell: bash
-
 runs:
   using: composite
   steps:
@@ -13,5 +9,8 @@ runs:
         node-version-file: package.json
     - uses: pnpm/action-setup@v4
     - run: pnpm install --frozen-lockfile
+      shell: bash
     - run: pnpm run generate
+      shell: bash
     - run: pnpm run test
+      shell: bash
