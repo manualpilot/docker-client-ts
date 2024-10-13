@@ -1,3 +1,3 @@
 tag:
   git tag $(cat package.json | jq -r .version)
-  git push --tags
+  git push --atomic origin main $(cat package.json | jq -r .version)

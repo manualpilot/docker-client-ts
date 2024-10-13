@@ -14,14 +14,20 @@ type Connection = {
 
 // TODO: less callback hell
 // TODO: logging interface
-export async function setupSSH(username: string, host: string, port: number, privateKey: Buffer): Promise<string> {
+export async function setupSSH(
+  username: string,
+  host: string,
+  port: number,
+  privateKey: Buffer,
+  remoteSocket: string,
+): Promise<string> {
   const socketPath = joinPath(tmpdir(), "docker-client-ts.sock");
   const pool: Connection[] = [];
 
   try {
     await access(socketPath);
     await unlink(socketPath);
-    console.log(`unlinked socket @ ${socketPath}`)
+    console.log(`unlinked socket @ ${socketPath}`);
   } catch (e) {
     // nothing to do, it doesn't exist
   }
@@ -43,7 +49,7 @@ export async function setupSSH(username: string, host: string, port: number, pri
 
         con.client.on("error", (err) => {
           console.error("ssh connection error", err);
-        })
+        });
 
         // TODO: handle connection error
         console.log("establishing new ssh connection", con.id);
@@ -58,7 +64,7 @@ export async function setupSSH(username: string, host: string, port: number, pri
       console.log("using connection", con.id);
 
       function forward(con: Connection) {
-        con.client.openssh_forwardOutStreamLocal("/var/run/docker.sock", (err, channel) => {
+        con.client.openssh_forwardOutStreamLocal(remoteSocket, (err, channel) => {
           if (err) {
             con.free = true;
             console.error("failed to forward to remote socket", err);
@@ -67,12 +73,14 @@ export async function setupSSH(username: string, host: string, port: number, pri
 
           console.log("acquired forward channel for connection", con.id);
 
-          channel.pipe(socket)
+          channel.pipe(socket);
           socket.pipe(channel);
 
           socket.on("end", () => {
-            console.log("on end")
-            channel.end(() => { con.free = true });
+            console.log("on end");
+            channel.end(() => {
+              con.free = true;
+            });
             channel.unpipe(socket);
             socket.unpipe(channel);
           });
@@ -87,15 +95,18 @@ export async function setupSSH(username: string, host: string, port: number, pri
           forward(con);
         });
       }
-
-    }).on("error", (err) => {
-      console.error("socket server error", err);
-      return reject(err);
-    }).on("listening", () => {
-      console.log(`created socket @ ${socketPath}`);
-      return resolve(socketPath);
-    }).on("close", () => {
-      console.log(`cleaning up socket @ ${socketPath}`);
-    }).listen(socketPath);
-  })
+    })
+      .on("error", (err) => {
+        console.error("socket server error", err);
+        return reject(err);
+      })
+      .on("listening", () => {
+        console.log(`created socket @ ${socketPath}`);
+        return resolve(socketPath);
+      })
+      .on("close", () => {
+        console.log(`cleaning up socket @ ${socketPath}`);
+      })
+      .listen(socketPath);
+  });
 }

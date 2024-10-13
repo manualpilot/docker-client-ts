@@ -21,7 +21,7 @@ test("plain", async () => {
   let found = false;
   while (!found) {
     const resp = await client.Image.List();
-    found = resp.find((i) => i.RepoTags?.includes('hello-world:latest')) !== undefined;
+    found = resp.find((i) => i.RepoTags?.includes("hello-world:latest")) !== undefined;
   }
 
   const createResp = await client.Container.Create({
@@ -30,17 +30,21 @@ test("plain", async () => {
     },
   });
 
-  expect(createResp.Id).toBeDefined();
+  const containerID = createResp.Id;
+  if (!containerID) {
+    // force non-null cast for rest of the test
+    fail("container id not defined");
+  }
 
   await client.Container.Start({
     path: {
-      id: createResp.Id!,
+      id: containerID,
     },
   });
 
   const waitResp = await client.Container.Wait({
     path: {
-      id: createResp.Id!,
+      id: containerID,
     },
   });
 
@@ -48,7 +52,7 @@ test("plain", async () => {
 
   await client.Container.Delete({
     path: {
-      id: createResp.Id!,
+      id: containerID,
     },
   });
 });

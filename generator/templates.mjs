@@ -34,7 +34,14 @@ async function getPool(params: DockerClientParams): Promise<Pool> {
   };
   
   if (params.ssh) {
-    const socketPath = await setupSSH(params.ssh.user, params.ssh.host, params.ssh.port, params.ssh.key);
+    const socketPath = await setupSSH(
+      params.ssh.user,
+      params.ssh.host,
+      params.ssh.port,
+      params.ssh.key,
+      params.baseURL.pathname,
+    );
+
     return new Pool("http://localhost", {
       socketPath,
       ...defaultParams,
