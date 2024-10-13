@@ -2,28 +2,53 @@
 const root = `
 import { Pool } from "undici";
 
+import { setupSSH } from "~/ssh.ts";
+
 {% for tag in tags %}
 import {{ tag }} from "~/tags/{{ tag | lower }}.ts"
 {% endfor %}
 
-export function DockerClient(base: URL) {
-  let pool: Pool;
-  if (base.protocol === 'unix:') {
-    pool = new Pool(
-      "http://localhost",
-      {
-        socketPath: base.pathname,
-      },
-    );
-  } else {
-    pool = new Pool(base);
-  }
+export type DockerClientParams = {
+  baseURL: URL;
+  ssh?: {
+    user: string;
+    host: string;
+    port: number;
+    key: Buffer;
+  };
+};
+
+export async function DockerClient(params: DockerClientParams) {
+  const pool = await getPool(params);
 
   return {
   {% for tag in tags %}
     {{ tag }}: {{ tag }}(pool),
   {% endfor %}
   };
+}
+
+async function getPool(params: DockerClientParams): Promise<Pool> {
+  const defaultParams: Pool.Options = {
+    headersTimeout: 30_000,
+  };
+  
+  if (params.ssh) {
+    const socketPath = await setupSSH(params.ssh.user, params.ssh.host, params.ssh.port, params.ssh.key);
+    return new Pool("http://localhost", {
+      socketPath,
+      ...defaultParams,
+    });
+  }
+
+  if (params.baseURL.protocol === "unix:") {
+    return new Pool("http://localhost", {
+      socketPath: params.baseURL.pathname,
+      ...defaultParams,
+    });
+  }
+
+  return new Pool(params.baseURL, defaultParams);
 }
 `;
 

@@ -5,6 +5,7 @@
   "types": "dist/index.d.ts",
   "type": "module",
   "packageManager": "pnpm@9.10.0",
+  "license": "Apache-2.0",
   "engines": {
     "node": ">=22",
     "pnpm": ">=9"
@@ -19,6 +20,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "ssh2": "^1.16.0",
     "undici": "^6.19.8",
     "zod": "^3.23.8"
   },
@@ -28,6 +30,7 @@
     "@types/jest": "^29.5.13",
     "@types/node": "^22.7.4",
     "@types/nunjucks": "^3.2.6",
+    "@types/ssh2": "^1.15.1",
     "esbuild": "^0.24.0",
     "jest": "^29.7.0",
     "json-schema-to-zod": "^2.4.1",

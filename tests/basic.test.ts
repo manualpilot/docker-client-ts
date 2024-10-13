@@ -1,7 +1,10 @@
 import { DockerClient } from "~/index.ts";
 
-test("DockerClient", async () => {
-  const client = DockerClient(new URL("unix:/var/run/docker.sock"));
+test("plain", async () => {
+  const client = await DockerClient({
+    baseURL: new URL("unix:/var/run/docker.sock"),
+  });
+
   const systemInfo = await client.System.Info();
   expect(systemInfo.ID).toHaveLength(36);
 
