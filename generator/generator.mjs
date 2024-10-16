@@ -68,6 +68,7 @@ async function main() {
         websocket: false,
         empty: false,
         noChange: false,
+        chunked: props.chunked,
       };
 
       for (const [codeStr, response] of Object.entries(responses)) {
@@ -147,6 +148,7 @@ async function main() {
         name,
         method: props.method,
         path: props.path,
+        chunked: props.output.chunked,
         path_has_params: props.path.includes("{") && props.path.includes("}"),
       };
 

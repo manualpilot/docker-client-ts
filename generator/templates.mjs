@@ -61,8 +61,10 @@ async function getPool(params: DockerClientParams): Promise<Pool> {
 
 const tag = `
 import { Pool } from "undici";
+import { Observable } from "rxjs";
 import { z } from "zod";
-import { sub } from "~/utils"
+import { sub } from "~/utils";
+import { chunked } from "~/chunked";
 
 {% for endpoint in endpoints %}
 
@@ -84,7 +86,9 @@ export default function {{ tag }}(pool: Pool) {
       input{% if endpoint.input_required %}?{% endif %}: z.infer<typeof {{ endpoint.input_name }}>,
     {% endif %}
     ): Promise<
-    {% if endpoint.output_type %}
+    {% if endpoint.chunked %}
+      Observable<string>
+    {% elif endpoint.output_type %}
       z.infer<typeof {{ endpoint.output_name }}>
     {% else %}
       void
@@ -112,7 +116,9 @@ export default function {{ tag }}(pool: Pool) {
     });
 
     if (resp.statusCode >= 200 && resp.statusCode <= 299) {
-      {% if endpoint.output_type %}
+      {% if endpoint.chunked %}
+        return chunked(resp);
+      {% elif endpoint.output_type %}
         return {{ endpoint.output_name }}.parse(await resp.body.json());
       {% else %}
         return;

@@ -8,7 +8,7 @@ const SSH_PORT = 34567;
 
 test("ssh", async () => {
   const onPiped = jest.fn();
-  await runServer(onPiped);
+  await startServer(onPiped);
 
   const client = await DockerClient({
     baseURL: new URL("unix:/var/run/docker.sock"),
@@ -35,9 +35,9 @@ async function delay(seconds: number) {
   });
 }
 
-async function runServer(onPiped: jest.Mock) {
-  return new Promise<void>((resolve) => {
-    new Server({ hostKeys: [utils.generateKeyPairSync("ed25519").private] }, (client) => {
+async function startServer(onPiped: jest.Mock) {
+  return new Promise<Server>((resolve) => {
+    const server = new Server({ hostKeys: [utils.generateKeyPairSync("ed25519").private] }, (client) => {
       client
         .on("authentication", (context) => {
           context.accept();
@@ -53,8 +53,10 @@ async function runServer(onPiped: jest.Mock) {
             });
           });
         });
-    }).listen(SSH_PORT, "127.0.0.1", () => {
-      return resolve();
+    });
+
+    server.listen(SSH_PORT, "127.0.0.1", () => {
+      return resolve(server);
     });
   });
 }

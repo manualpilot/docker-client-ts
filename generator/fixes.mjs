@@ -1,5 +1,7 @@
 // fixes mostly to work around the broken json marshaling in golang
 export function applyFixes(schema) {
+  schema.paths["/images/create"].post.chunked = true;
+
   for (const definition in schema.definitions) {
     if (schema.definitions[definition].type === "array") {
       schema.definitions[definition].nullable = true;
