@@ -28,21 +28,15 @@ test("plain", async () => {
     },
   });
 
-  const containerID = createResp.Id;
-  if (!containerID) {
-    // force non-null cast for rest of the test
-    fail("container id not defined");
-  }
-
   await client.Container.Start({
     path: {
-      id: containerID,
+      id: createResp.Id,
     },
   });
 
   const waitResp = await client.Container.Wait({
     path: {
-      id: containerID,
+      id: createResp.Id,
     },
   });
 
@@ -50,7 +44,7 @@ test("plain", async () => {
 
   const containerLogsResp = await client.Container.Logs({
     path: {
-      id: containerID,
+      id: createResp.Id,
     },
     query: {
       stdout: true,
@@ -63,7 +57,7 @@ test("plain", async () => {
 
   await client.Container.Delete({
     path: {
-      id: containerID,
+      id: createResp.Id,
     },
   });
 });
