@@ -48,6 +48,19 @@ test("plain", async () => {
 
   expect(waitResp.StatusCode).toBe(0);
 
+  const containerLogsResp = await client.Container.Logs({
+    path: {
+      id: containerID,
+    },
+    query: {
+      stdout: true,
+      stderr: true,
+    },
+  });
+
+  const containerLogs = await collect(containerLogsResp);
+  expect(containerLogs.length).toBeGreaterThan(0);
+
   await client.Container.Delete({
     path: {
       id: containerID,

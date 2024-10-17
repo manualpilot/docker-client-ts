@@ -1,4 +1,4 @@
-import { cp, mkdir, rm, writeFile } from "node:fs/promises";
+import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 
 import { dereference } from "@apidevtools/json-schema-ref-parser";
 import { jsonSchemaToZod } from "json-schema-to-zod";
@@ -7,7 +7,6 @@ import * as YAML from "yaml";
 import { fetch } from "undici";
 
 import { applyFixes } from "./fixes.mjs";
-import { TEMPLATES } from "./templates.mjs";
 
 async function main() {
 
@@ -63,12 +62,15 @@ async function main() {
         }
       }
 
+      const streamTypes = new Set(["application/vnd.docker.raw-stream", "application/vnd.docker.multiplexed-stream"])
+      const outputStream = new Set(props.produces).intersection(streamTypes).size > 0;
+
       const output = {
         errors: [],
         websocket: false,
         empty: false,
         noChange: false,
-        chunked: props.chunked,
+        chunked: props.chunked || outputStream,
       };
 
       for (const [codeStr, response] of Object.entries(responses)) {
@@ -129,6 +131,11 @@ async function main() {
     }
   }
 
+  const templates = {
+    root: await readFile("./templates/root.tmpl", "utf8"),
+    tag: await readFile("./templates/tag.tmpl", "utf8"),
+  };
+
   const files = {};
   const renderer = new nunjucks.Environment(null, {
     autoescape: false,
@@ -136,7 +143,7 @@ async function main() {
     trimBlocks: true,
   });
 
-  files["./src/index.ts"] = renderer.renderString(TEMPLATES.root, {
+  files["./src/index.ts"] = renderer.renderString(templates.root, {
     tags: Object.keys(byTag),
   });
 
@@ -178,7 +185,7 @@ async function main() {
       ctx.endpoints.push(attribs);
     }
 
-    files[`./src/tags/${tag.toLowerCase()}.ts`] = renderer.renderString(TEMPLATES.tag, ctx);
+    files[`./src/tags/${tag.toLowerCase()}.ts`] = renderer.renderString(templates.tag, ctx);
   }
 
   await rm("./src", { recursive: true, force: true });

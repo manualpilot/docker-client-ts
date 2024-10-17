@@ -6,10 +6,12 @@ export function chunked(resp: Dispatcher.ResponseData): Observable<string> {
   const stream = new ReplaySubject<string>();
 
   resp.body.on("data", (chunk) => {
-    for (const line of chunk
+    const lines = chunk
       .toString("utf-8")
       .split("\r\n")
-      .filter((line: string) => line.length > 0)) {
+      .filter((line: string) => line.length > 0);
+
+    for (const line of lines) {
       stream.next(line);
     }
   });
