@@ -100,7 +100,7 @@ async function main() {
           const errorSchema = JSON.parse(JSON.stringify(response.schema));
           errorSchema.required.push("code");
           errorSchema.properties.code = {
-            type: "number",
+            const: code,
             description: "The error code",
           }
 
@@ -178,9 +178,11 @@ async function main() {
         attribs.output_type = jsonSchemaToZod(props.output.schema);
       }
 
-      attribs.error = props.output.errors.length === 1 ?
+      attribs.error_name = `${name}Error`;
+      attribs.error_type = props.output.errors.length === 1 ?
         jsonSchemaToZod(props.output.errors[0]) :
-        jsonSchemaToZod({ anyOf: props.output.errors });
+        // TODO: the library doesnt support discriminatedUnion
+        jsonSchemaToZod({ anyOf: props.output.errors }).replace("z.union(", 'z.discriminatedUnion("code",');
 
       ctx.endpoints.push(attribs);
     }

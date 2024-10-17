@@ -14,6 +14,8 @@ export const {{ endpoint.input_name }} = {{ endpoint.input_type }};
 export const {{ endpoint.output_name }} = {{ endpoint.output_type }};
 {% endif %}
 
+export const {{ endpoint.error_name }} = {{ endpoint.error_type }};
+
 {% endfor %}
 
 export default function {{ tag }}(pool: Pool) {
@@ -33,38 +35,38 @@ export default function {{ tag }}(pool: Pool) {
     {% endif %}
     > => {
 
-    const resp = await pool.request({
-      method: "{{ endpoint.method }}",
-      {% if endpoint.path_has_params %}
-      path: sub("{{ endpoint.path }}", input.path),
-      {% else %}
-      path: "{{ endpoint.path }}",
-      {% endif %}
-      {% if endpoint.input_has_query %}
-      query: input{% if endpoint.input_required %}?{% endif %}.query,
-      {% endif %}
-      headers: {
-        {% if endpoint.input_has_body %}
-          "Content-Type": "application/json",
+      const resp = await pool.request({
+        method: "{{ endpoint.method }}",
+        {% if endpoint.path_has_params %}
+        path: sub("{{ endpoint.path }}", input.path),
+        {% else %}
+        path: "{{ endpoint.path }}",
         {% endif %}
-      },
-      {% if endpoint.input_has_body %}
-      body: JSON.stringify(input.body),
-      {% endif %}
-    });
+        {% if endpoint.input_has_query %}
+        query: input{% if endpoint.input_required %}?{% endif %}.query,
+        {% endif %}
+        headers: {
+          {% if endpoint.input_has_body %}
+            "Content-Type": "application/json",
+          {% endif %}
+        },
+        {% if endpoint.input_has_body %}
+        body: JSON.stringify(input.body),
+        {% endif %}
+      });
 
-    if (resp.statusCode >= 200 && resp.statusCode <= 299) {
-      {% if endpoint.chunked %}
-        return chunked(resp);
-      {% elif endpoint.output_type %}
-        return {{ endpoint.output_name }}.parse(await resp.body.json());
-      {% else %}
-        return;
-      {% endif %}
-    }
+      if (resp.statusCode >= 200 && resp.statusCode <= 299) {
+        {% if endpoint.chunked %}
+          return chunked(resp);
+        {% elif endpoint.output_type %}
+          return {{ endpoint.output_name }}.parse(await resp.body.json());
+        {% else %}
+          return;
+        {% endif %}
+      }
 
-    // TODO: parse into the error types
-    throw Error(await resp.body.text());
+      const errorBody = await resp.body.json() as object;
+      throw {{ endpoint.error_name }}.parse({ code: resp.statusCode, ...errorBody });
     },
 {% endfor %}
   };

@@ -10,7 +10,10 @@ export function applyFixes(schema) {
         schema.definitions[definition].properties[property].nullable = true;
       }
 
-      if ("x-nullable" in schema.definitions[definition].properties[property]) {
+      if (
+        "x-nullable" in schema.definitions[definition].properties[property] &&
+        schema.definitions[definition].properties[property] === true
+      ) {
         schema.definitions[definition].properties[property].nullable = true;
       }
 
@@ -26,6 +29,7 @@ export function applyFixes(schema) {
     }
   }
 
+  // it is not possible to infer that this endpoint returns a stream
   schema.paths["/images/create"].post.chunked = true;
 
   for (const path in schema.paths) {
@@ -33,9 +37,39 @@ export function applyFixes(schema) {
       if (schema.paths[path][endpoint].parameters) {
         for (const param of schema.paths[path][endpoint].parameters) {
           if (param.hasOwnProperty("default")) {
+            // don't actually send the documented default value,
+            // we know that the documentation can be wrong
             param.default = undefined;
           }
         }
+      }
+    }
+  }
+
+  for (const path in schema.paths) {
+    for (const endpoint in schema.paths[path]) {
+      const codes = new Set(Object.keys(schema.paths[path][endpoint].responses));
+
+      // 400 Bad Request is commonly returned from many endpoints yet missing from some responses
+      if (!codes.has("400")) {
+        schema.paths[path][endpoint].responses[400] = {
+          description: "bad request",
+          schema: {
+            description : "Represents an error.",
+            type : "object",
+            required : [ "message", "code" ],
+            properties : {
+              message : {
+                description : "The error message.",
+                type : "string",
+              },
+              code : {
+                const : 400,
+                description : "The error code",
+              },
+            },
+          }
+        };
       }
     }
   }

@@ -4,7 +4,9 @@
   "version": "0.0.5",
   "homepage": "https://github.com/manualpilot/docker-client-ts",
   "repository": "github:manualpilot/docker-client-ts",
-  "keywords": ["docker"],
+  "keywords": [
+    "docker"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
