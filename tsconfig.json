@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "emitDeclarationOnly": true,
     "rootDir": "src",
     "baseUrl": ".",
     "declarationDir": "dist",
+    "sourceMap": true,
     "outDir": "dist",
     "composite": true,
     "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
@@ -12,7 +12,6 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Node",
-    "allowImportingTsExtensions": true,
     "allowSyntheticDefaultImports": true,
     "lib": [
       "ESNext"

@@ -1,7 +1,7 @@
 import type { Observable } from "rxjs";
 import { buffer, toArray } from "rxjs/operators";
 
-import { DockerClient } from "~/index.ts";
+import { DockerClient } from "../src";
 
 test("plain", async () => {
   const client = await DockerClient({

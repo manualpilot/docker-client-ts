@@ -18,8 +18,8 @@
   },
   "scripts": {
     "prebuild": "rm -rf ./dist",
-    "build": "esbuild --sourcemap --format=esm --platform=node --outdir=dist --log-level=debug './src/**/*.ts'",
-    "postbuild": "tsc",
+    "build": "tsc",
+    "postbuild": "tsc-alias",
     "format": "biome check --verbose --write --unsafe",
     "generate": "node ./generator/generator.mjs",
     "postgenerate": "pnpm run format",
@@ -39,13 +39,13 @@
     "@types/node": "^22.7.5",
     "@types/nunjucks": "^3.2.6",
     "@types/ssh2": "^1.15.1",
-    "esbuild": "^0.24.0",
     "husky": "^9.1.6",
     "jest": "^29.7.0",
     "json-schema-to-zod": "^2.4.1",
     "nunjucks": "^3.2.4",
     "semver": "^7.6.3",
     "ts-jest": "^29.2.5",
+    "tsc-alias": "^1.8.10",
     "typescript": "^5.6.3",
     "yaml": "^2.6.0"
   }

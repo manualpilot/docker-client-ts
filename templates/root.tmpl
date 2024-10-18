@@ -1,9 +1,9 @@
 import { Pool } from "undici";
 
-import { setupSSH } from "~/ssh.ts";
+import { setupSSH } from "~/ssh";
 
 {% for tag in tags %}
-import {{ tag }} from "~/tags/{{ tag | lower }}.ts"
+import {{ tag }} from "~/tags/{{ tag | lower }}"
 {% endfor %}
 
 export type DockerClientParams = {
