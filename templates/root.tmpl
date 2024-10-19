@@ -1,6 +1,6 @@
 import { Pool } from "undici";
 
-import { DockerClientParams } from "~/etc";
+import { type DockerClientParams, getPool } from "~/etc";
 import { setupSSH } from "~/ssh";
 
 {% for tag in tags %}
@@ -21,33 +21,4 @@ export async function DockerClient(params: DockerClientParams) {
       }
     }
   };
-}
-
-async function getPool(params: DockerClientParams): Promise<{ pool: Pool, close?: () => Promise<void> }> {
-  const defaultParams: Pool.Options = {
-    headersTimeout: 30_000,
-  };
-
-  if (params.ssh) {
-    const { socketPath, close } = await setupSSH(params);
-
-    return {
-      close,
-      pool: new Pool("http://localhost", {
-        socketPath,
-        ...defaultParams,
-      }),
-    };
-  }
-
-  if (params.baseURL.protocol === "unix:") {
-    return {
-      pool: new Pool("http://localhost", {
-        socketPath: params.baseURL.pathname,
-        ...defaultParams,
-      }),
-    };
-  }
-
-  return { pool: new Pool(params.baseURL, defaultParams) };
 }

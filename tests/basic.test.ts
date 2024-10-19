@@ -16,11 +16,10 @@ test("plain", async () => {
       fromImage: "hello-world",
       tag: "latest",
     },
-    // TODO: support private registry auth header
   });
 
   const pullLogs = await collect(pullResp);
-  console.log(pullLogs);
+  expect(pullLogs.length).toBeGreaterThan(0);
 
   const createResp = await client.Container.Create({
     body: {

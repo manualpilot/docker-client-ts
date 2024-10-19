@@ -1,5 +1,6 @@
 import { type Observable, ReplaySubject } from "rxjs";
-import type { Dispatcher } from "undici";
+import { type Dispatcher, Pool } from "undici";
+import { setupSSH } from "../src/ssh";
 
 export type DockerClientParams = {
   baseURL: URL;
@@ -20,6 +21,35 @@ export function getLogger(params: DockerClientParams): NonNullable<DockerClientP
     log: params.console?.log ?? console.log,
     error: params.console?.error ?? console.error,
   };
+}
+
+export async function getPool(params: DockerClientParams): Promise<{ pool: Pool; close?: () => Promise<void> }> {
+  const defaultParams: Pool.Options = {
+    headersTimeout: 30_000,
+  };
+
+  if (params.ssh) {
+    const { socketPath, close } = await setupSSH(params);
+
+    return {
+      close,
+      pool: new Pool("http://localhost", {
+        socketPath,
+        ...defaultParams,
+      }),
+    };
+  }
+
+  if (params.baseURL.protocol === "unix:") {
+    return {
+      pool: new Pool("http://localhost", {
+        socketPath: params.baseURL.pathname,
+        ...defaultParams,
+      }),
+    };
+  }
+
+  return { pool: new Pool(params.baseURL, defaultParams) };
 }
 
 export const sub = (path: string, params: { [key: string]: string }) =>
@@ -47,4 +77,4 @@ export function chunked(resp: Dispatcher.ResponseData): Observable<string> {
   return stream.asObservable();
 }
 
-console.log();
+export function interactive() {}

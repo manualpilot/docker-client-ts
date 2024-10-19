@@ -70,7 +70,7 @@ async function main() {
         websocket: false,
         empty: false,
         noChange: false,
-        chunked: props.chunked || outputStream,
+        chunked: props.chunked || (responses["101"] === undefined && outputStream),
       };
 
       for (const [codeStr, response] of Object.entries(responses)) {
