@@ -8,7 +8,7 @@ const SSH_PORT = 34567;
 
 test("ssh", async () => {
   const onPiped = jest.fn();
-  await startServer(onPiped);
+  const server = await startServer(onPiped);
 
   const client = await DockerClient({
     baseURL: new URL("unix:/var/run/docker.sock"),
@@ -25,13 +25,22 @@ test("ssh", async () => {
 
   expect(onPiped).toHaveBeenCalled();
 
-  // TODO: wait for clean-up after connection ended
-  await delay(5);
+  await client.close();
+  await stopServer(server);
 });
 
 async function delay(seconds: number) {
   return new Promise((resolve) => {
     setTimeout(resolve, seconds * 1_000);
+  });
+}
+
+async function stopServer(server: Server) {
+  return new Promise<void>((resolve, reject) => {
+    server.close((err) => {
+      if (err) return reject(err);
+      return resolve();
+    });
   });
 }
 

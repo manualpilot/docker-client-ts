@@ -17,22 +17,28 @@ export type DockerClientParams = {
 };
 
 export async function DockerClient(params: DockerClientParams) {
-  const pool = await getPool(params);
+  const { pool, close } = await getPool(params);
 
   return {
   {% for tag in tags %}
     {{ tag }}: {{ tag }}(pool),
   {% endfor %}
+    close: async () => {
+      await pool.close();
+      if (close) {
+        await close();
+      }
+    }
   };
 }
 
-async function getPool(params: DockerClientParams): Promise<Pool> {
+async function getPool(params: DockerClientParams): Promise<{ pool: Pool, close?: () => Promise<void> }> {
   const defaultParams: Pool.Options = {
     headersTimeout: 30_000,
   };
 
   if (params.ssh) {
-    const socketPath = await setupSSH(
+    const { socketPath, close } = await setupSSH(
       params.ssh.user,
       params.ssh.host,
       params.ssh.port,
@@ -40,18 +46,23 @@ async function getPool(params: DockerClientParams): Promise<Pool> {
       params.baseURL.pathname,
     );
 
-    return new Pool("http://localhost", {
-      socketPath,
-      ...defaultParams,
-    });
+    return {
+      close,
+      pool: new Pool("http://localhost", {
+        socketPath,
+        ...defaultParams,
+      }),
+    };
   }
 
   if (params.baseURL.protocol === "unix:") {
-    return new Pool("http://localhost", {
-      socketPath: params.baseURL.pathname,
-      ...defaultParams,
-    });
+    return {
+      pool: new Pool("http://localhost", {
+        socketPath: params.baseURL.pathname,
+        ...defaultParams,
+      }),
+    };
   }
 
-  return new Pool(params.baseURL, defaultParams);
+  return { pool: new Pool(params.baseURL, defaultParams) };
 }
