@@ -1,8 +1,7 @@
 import { Pool } from "undici";
 import { Observable } from "rxjs";
 import { z } from "zod";
-import { sub } from "~/utils";
-import { chunked } from "~/chunked";
+import { chunked, sub } from "~/etc";
 
 {% for endpoint in endpoints %}
 

@@ -1,20 +1,11 @@
 import { Pool } from "undici";
 
+import { DockerClientParams } from "~/etc";
 import { setupSSH } from "~/ssh";
 
 {% for tag in tags %}
 import {{ tag }} from "~/tags/{{ tag | lower }}"
 {% endfor %}
-
-export type DockerClientParams = {
-  baseURL: URL;
-  ssh?: {
-    user: string;
-    host: string;
-    port: number;
-    key: Buffer;
-  };
-};
 
 export async function DockerClient(params: DockerClientParams) {
   const { pool, close } = await getPool(params);
@@ -38,13 +29,7 @@ async function getPool(params: DockerClientParams): Promise<{ pool: Pool, close?
   };
 
   if (params.ssh) {
-    const { socketPath, close } = await setupSSH(
-      params.ssh.user,
-      params.ssh.host,
-      params.ssh.port,
-      params.ssh.key,
-      params.baseURL.pathname,
-    );
+    const { socketPath, close } = await setupSSH(params);
 
     return {
       close,

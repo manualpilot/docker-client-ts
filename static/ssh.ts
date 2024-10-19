@@ -6,6 +6,8 @@ import { join as joinPath } from "node:path";
 
 import { Client } from "ssh2";
 
+import { type DockerClientParams, getLogger } from "~/etc";
+
 type Connection = {
   id: string;
   client: Client;
@@ -18,21 +20,15 @@ type SSHContext = {
 };
 
 // TODO: less callback hell
-// TODO: logging interface
-export async function setupSSH(
-  username: string,
-  host: string,
-  port: number,
-  privateKey: Buffer,
-  remoteSocket: string,
-): Promise<SSHContext> {
+export async function setupSSH(params: DockerClientParams): Promise<SSHContext> {
+  const logger = getLogger(params);
   const socketPath = joinPath(tmpdir(), "docker-client-ts.sock");
   const pool: Connection[] = [];
 
   try {
     await access(socketPath);
     await unlink(socketPath);
-    console.log(`[DockerClient] unlinked socket @ ${socketPath}`);
+    logger.log(`[DockerClient] unlinked socket @ ${socketPath}`);
   } catch (e) {
     // nothing to do, it doesn't exist
   }
@@ -53,36 +49,42 @@ export async function setupSSH(
         };
 
         con.client.on("error", (err) => {
-          console.error("[DockerClient] ssh connection error", err);
+          logger.error("[DockerClient] ssh connection error", err);
         });
 
         // TODO: handle connection error
-        console.log("[DockerClient] establishing new ssh connection", con.id);
-        con.client.connect({ username, host, port, privateKey });
+        con.client.connect({
+          username: params.ssh?.user,
+          host: params.ssh?.host,
+          port: params.ssh?.port,
+          privateKey: params.ssh?.key,
+        });
+
         pool.push(con);
+        logger.log("[DockerClient] establishing new ssh connection", con.id);
       } else {
         connected = true;
       }
 
       con.free = false;
 
-      console.log("[DockerClient] using connection", con.id);
+      logger.log("[DockerClient] using connection", con.id);
 
       function forward(con: Connection) {
-        con.client.openssh_forwardOutStreamLocal(remoteSocket, (err, channel) => {
+        con.client.openssh_forwardOutStreamLocal(params.baseURL.pathname, (err, channel) => {
           if (err) {
             con.free = true;
-            console.error("[DockerClient] failed to forward to remote socket", err);
+            logger.error("[DockerClient] failed to forward to remote socket", err);
             return;
           }
 
-          console.log("[DockerClient] acquired forward channel for connection", con.id);
+          logger.log("[DockerClient] acquired forward channel for connection", con.id);
 
           channel.pipe(socket);
           socket.pipe(channel);
 
           socket.on("end", () => {
-            console.log("on end");
+            logger.log("[DockerClient] forward channel ended for connection", con.id);
             channel.end(() => {
               con.free = true;
             });
@@ -96,7 +98,7 @@ export async function setupSSH(
         forward(con);
       } else {
         con.client.once("ready", () => {
-          console.log("[DockerClient] ssh connection ready", con.id);
+          logger.log("[DockerClient] ssh connection ready", con.id);
           forward(con);
         });
       }
@@ -119,7 +121,7 @@ export async function setupSSH(
           }
 
           if (errors.length > 0) {
-            console.error(`[DockerClient] shutdown errors ${errors}`);
+            logger.error(`[DockerClient] shutdown errors ${errors}`);
           }
 
           return resolve();
@@ -128,17 +130,17 @@ export async function setupSSH(
     }
 
     server.on("error", (err) => {
-      console.error("[DockerClient] socket server error", err);
+      logger.error("[DockerClient] socket server error", err);
       return reject(err);
     });
 
     server.on("listening", () => {
-      console.log(`[DockerClient] created socket @ ${socketPath}`);
+      logger.log(`[DockerClient] created socket @ ${socketPath}`);
       return resolve({ socketPath, close });
     });
 
     server.on("close", () => {
-      console.log(`[DockerClient] cleaning up socket @ ${socketPath}`);
+      logger.log(`[DockerClient] cleaning up socket @ ${socketPath}`);
     });
 
     server.listen(socketPath);
