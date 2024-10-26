@@ -18,22 +18,8 @@ create-release:
   #!/bin/bash
 
   zip -r dist.zip package.json tsconfig.json README.md LICENSE src dist
-
   version=$(cat package.json | jq -r .version)
-
-  release_id=$(
-    gh api \
-      --method POST \
-      -H "Accept: application/vnd.github+json" \
-      -H "X-GitHub-Api-Version: 2022-11-28" \
-      /repos/manualpilot/docker-client-ts/releases \
-      -f "tag_name=${version}" \
-      -f "name=${version}"
-  )
-
-  gh api \
-    --method POST \
-    -H "Accept: application/vnd.github+json" \
-    -H "X-GitHub-Api-Version: 2022-11-28" \
-    "/repos/manualpilot/docker-client-ts/releases/${release_id}/assets?name=dist.zip" \
-    -f "@dist.zip"
+  gh release create "${version}" dist.zip \
+    --verify-tag \
+    --title "${version}" \
+    --repo manualpilot/docker-client-ts

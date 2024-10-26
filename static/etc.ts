@@ -1,3 +1,4 @@
+import { from as toIterable } from "ix/asynciterable";
 import { type Observable, ReplaySubject } from "rxjs";
 import { type Dispatcher, Pool } from "undici";
 import { setupSSH } from "../src/ssh";
@@ -77,4 +78,33 @@ export function chunked(resp: Dispatcher.ResponseData): Observable<string> {
   return stream.asObservable();
 }
 
-export function interactive() {}
+export type TerminalSession = {
+  // write commands to this stream
+  input: ReplaySubject<string>;
+  // combined stdout/stderr output will through on this stream
+  output: ReplaySubject<string>;
+  close: () => void;
+};
+
+// WARN: this doesn't handle TTY mode yet
+export function terminal(resp: Dispatcher.UpgradeData): TerminalSession {
+  const input = new ReplaySubject<string>(30);
+  const output = new ReplaySubject<string>(30);
+
+  const close = () => {
+    input.complete();
+    output.complete();
+  };
+
+  resp.socket.on("data", (chunk: Buffer) => {
+    output.next(chunk.subarray(8).toString("binary"));
+  });
+
+  setTimeout(async () => {
+    for await (const cmd of toIterable(input)) {
+      resp.socket.write(`${cmd}\n`);
+    }
+  });
+
+  return { input, output, close };
+}

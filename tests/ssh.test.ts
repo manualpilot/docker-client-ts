@@ -29,12 +29,6 @@ test("ssh", async () => {
   await stopServer(server);
 });
 
-async function delay(seconds: number) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, seconds * 1_000);
-  });
-}
-
 async function stopServer(server: Server) {
   return new Promise<void>((resolve, reject) => {
     server.close((err) => {

@@ -1,7 +1,7 @@
 import { Pool } from "undici";
 import { Observable } from "rxjs";
 import { z } from "zod";
-import { chunked, sub } from "~/etc";
+import { chunked, sub, terminal } from "~/etc";
 
 {% for endpoint in endpoints %}
 
@@ -25,7 +25,9 @@ export default function {{ tag }}(pool: Pool) {
       input{% if endpoint.input_required %}?{% endif %}: z.infer<typeof {{ endpoint.input_name }}>,
     {% endif %}
     ): Promise<
-    {% if endpoint.chunked %}
+    {% if endpoint.upgrade %}
+      ReturnType<typeof terminal>
+    {% elif endpoint.chunked %}
       Observable<string>
     {% elif endpoint.output_type %}
       z.infer<typeof {{ endpoint.output_name }}>
@@ -33,6 +35,22 @@ export default function {{ tag }}(pool: Pool) {
       void
     {% endif %}
     > => {
+
+    {% if endpoint.upgrade %}
+
+      const resp = await pool.upgrade({
+        method: "{{ endpoint.method }}",
+        {% if endpoint.path_has_params %}
+        path: sub("{{ endpoint.path }}", input.path),
+        {% else %}
+        path: "{{ endpoint.path }}",
+        {% endif %}
+        // TODO: how do we post initial body? by the time upgrade returns, response headers already posted
+      });
+
+      return terminal(resp);
+
+    {% else %}
 
       const resp = await pool.request({
         method: "{{ endpoint.method }}",
@@ -66,6 +84,8 @@ export default function {{ tag }}(pool: Pool) {
 
       const errorBody = await resp.body.json() as object;
       throw {{ endpoint.error_name }}.parse({ code: resp.statusCode, ...errorBody });
+
+    {% endif %}
     },
 {% endfor %}
   };

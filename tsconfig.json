@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "rootDir": "src",
+    "rootDir": ".",
     "baseUrl": ".",
     "declarationDir": "dist",
     "sourceMap": true,
@@ -9,6 +9,7 @@
     "composite": true,
     "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
     "strict": true,
+    "skipLibCheck": true,
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Node",
@@ -20,7 +21,7 @@
       "~/*": [
         "src/*"
       ]
-    },
+    }
   },
   "include": [
     "src"

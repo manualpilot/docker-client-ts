@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      ix:
+        specifier: ^7.0.0
+        version: 7.0.0
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1
@@ -958,6 +961,9 @@ packages:
   istanbul-reports@3.1.7:
     resolution: {integrity: sha512-BewmUXImeuRk2YY0PVbxgKAysvhRPUQE0h5QRM++nVWyubKGV0l8qQ5op8+B2DOmwSe63Jivj0BjkPQVf8fP5g==}
     engines: {node: '>=8'}
+
+  ix@7.0.0:
+    resolution: {integrity: sha512-hgVnphYh+ytIEsmjeym5wP2GPaM3+RZf7zCrZXE7gjwwmpIBEg0t6GRX7BbdXzTosXCstEAzdPxpyplGBYnIbw==}
 
   jake@10.9.2:
     resolution: {integrity: sha512-2P4SQ0HrLQ+fw6llpLnOaGAvN2Zu6778SJMrCUwns4fOoG9ayrTiZk3VV8sCPkVZF8ab0zksVpS8FDY5pRCNBA==}
@@ -2591,6 +2597,11 @@ snapshots:
     dependencies:
       html-escaper: 2.0.2
       istanbul-lib-report: 3.0.1
+
+  ix@7.0.0:
+    dependencies:
+      '@types/node': 22.7.7
+      tslib: 2.8.0
 
   jake@10.9.2:
     dependencies:

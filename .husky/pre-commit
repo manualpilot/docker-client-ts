@@ -1,3 +1,4 @@
+rm -rf ./dist ./src
 pnpm run generate
 pnpm run build
 pnpm run test

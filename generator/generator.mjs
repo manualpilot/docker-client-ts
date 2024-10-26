@@ -67,6 +67,7 @@ async function main() {
 
       const output = {
         errors: [],
+        stream: outputStream && !props.chunked,
         websocket: false,
         empty: false,
         noChange: false,
@@ -156,6 +157,7 @@ async function main() {
         method: props.method,
         path: props.path,
         chunked: props.output.chunked,
+        upgrade: props.output.stream,
         path_has_params: props.path.includes("{") && props.path.includes("}"),
       };
 

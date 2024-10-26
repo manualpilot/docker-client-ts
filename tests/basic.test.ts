@@ -1,7 +1,5 @@
-import type { Observable } from "rxjs";
-import { buffer, toArray } from "rxjs/operators";
-
 import { DockerClient } from "../src";
+import { collect } from "./utils";
 
 test("plain", async () => {
   const client = await DockerClient({
@@ -60,11 +58,3 @@ test("plain", async () => {
     },
   });
 });
-
-async function collect(observable: Observable<string>): Promise<string[]> {
-  return new Promise<string[]>((resolve) => {
-    observable.pipe(buffer(observable), toArray()).subscribe((value) => {
-      resolve(value.flat());
-    });
-  });
-}
