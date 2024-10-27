@@ -25,9 +25,10 @@
   },
   "scripts": {
     "prebuild": "rm -rf ./dist",
-    "build": "tsc",
-    "postbuild": "tsc-alias",
+    "build": "tsc --project tsconfig-build.json",
+    "postbuild": "tsc-alias --project tsconfig-build.json",
     "format": "biome check --verbose --write --unsafe",
+    "pregenerate": "rm -rf ./dist ./src",
     "generate": "node ./generator/generator.mjs",
     "postgenerate": "pnpm run format",
     "test": "jest",
