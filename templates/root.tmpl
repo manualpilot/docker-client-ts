@@ -7,6 +7,8 @@ import { setupSSH } from "~/ssh";
 import {{ tag }} from "~/tags/{{ tag | lower }}"
 {% endfor %}
 
+export { ComposeSpecificationSchema } from "~/compose";
+
 export async function DockerClient(params: DockerClientParams) {
   const { pool, close } = await getPool(params);
 

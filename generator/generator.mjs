@@ -8,11 +8,11 @@ import { fetch } from "undici";
 
 import { applyFixes } from "./fixes.mjs";
 
+const SCHEMA_URL = "https://docs.docker.com/reference/api/engine/version/v1.47.yaml"
+
 async function main() {
 
-  const schema = YAML.parse(
-    await (await fetch("https://docs.docker.com/reference/api/engine/version/v1.47.yaml")).text(),
-  );
+  const schema = YAML.parse(await (await fetch(SCHEMA_URL)).text());
 
   applyFixes(schema);
   await dereference(schema);
