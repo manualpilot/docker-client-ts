@@ -97,7 +97,10 @@ export function terminal(resp: Dispatcher.UpgradeData): TerminalSession {
   };
 
   resp.socket.on("data", (chunk: Buffer) => {
-    output.next(chunk.subarray(8).toString("binary"));
+    const out = chunk.subarray(8).toString("binary");
+    for (const line of out.trim().split("\n")) {
+      output.next(line);
+    }
   });
 
   setTimeout(async () => {

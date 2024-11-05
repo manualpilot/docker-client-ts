@@ -8,6 +8,9 @@ import {{ tag }} from "~/tags/{{ tag | lower }}"
 {% endfor %}
 
 export { ComposeSpecificationSchema } from "~/compose";
+export { type DockerClientParams } from "~/etc"
+
+export type DockerClientType = Awaited<ReturnType<typeof DockerClient>>;
 
 export async function DockerClient(params: DockerClientParams) {
   const { pool, close } = await getPool(params);
