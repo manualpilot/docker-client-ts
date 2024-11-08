@@ -19,10 +19,12 @@ type SSHContext = {
   close: () => Promise<void>;
 };
 
+let socketID = 0;
+
 // TODO: less callback hell
 export async function setupSSH(params: DockerClientParams): Promise<SSHContext> {
   const logger = getLogger(params);
-  const socketPath = joinPath(tmpdir(), "docker-client-ts.sock");
+  const socketPath = joinPath(tmpdir(), `docker-client-ts-${socketID++}.sock`);
   const pool: Connection[] = [];
 
   try {
