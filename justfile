@@ -17,7 +17,7 @@ bump-version level:
 create-release:
   #!/bin/bash
 
-  zip -r dist.zip package.json tsconfig.json README.md LICENSE src dist
+  zip -r dist.zip package.json tsconfig.json README.md LICENSE lib
   version=$(cat package.json | jq -r .version)
   gh release create "${version}" dist.zip \
     --verify-tag \

@@ -4,5 +4,6 @@
 .npmrc
 *.tsbuildinfo
 *.tgz
+*.zip
 node_modules
 lib
