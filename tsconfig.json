@@ -3,11 +3,9 @@
     "declaration": true,
     "rootDir": ".",
     "baseUrl": ".",
-    "declarationDir": "dist",
+    "declarationDir": "lib",
     "sourceMap": true,
-    "outDir": "dist",
     "composite": true,
-    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
     "strict": true,
     "skipLibCheck": true,
     "target": "ESNext",
@@ -19,11 +17,12 @@
     ],
     "paths": {
       "~/*": [
-        "src/*"
+        "lib/*"
       ]
     }
   },
+  "exclude": [],
   "include": [
-    "src"
+    "lib"
   ]
 }

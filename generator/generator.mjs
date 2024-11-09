@@ -144,7 +144,7 @@ async function main() {
     trimBlocks: true,
   });
 
-  files["./src/index.ts"] = renderer.renderString(templates.root, {
+  files["./lib/index.ts"] = renderer.renderString(templates.root, {
     tags: Object.keys(byTag),
   });
 
@@ -189,12 +189,12 @@ async function main() {
       ctx.endpoints.push(attribs);
     }
 
-    files[`./src/tags/${tag.toLowerCase()}.ts`] = renderer.renderString(templates.tag, ctx);
+    files[`./lib/tags/${tag.toLowerCase()}.ts`] = renderer.renderString(templates.tag, ctx);
   }
 
-  await rm("./src", { recursive: true, force: true });
-  await mkdir("./src/tags", { mode: 0o755, recursive: true });
-  await cp("./static", "./src", { recursive: true });
+  await rm("./lib", { recursive: true, force: true });
+  await mkdir("./lib/tags", { mode: 0o755, recursive: true });
+  await cp("./static", "./lib", { recursive: true });
 
   for (const [filePath, content] of Object.entries(files)) {
     await writeFile(filePath, content, { flush: true, mode: 0o644 });

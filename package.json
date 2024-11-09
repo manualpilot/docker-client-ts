@@ -5,30 +5,31 @@
   "homepage": "https://github.com/manualpilot/docker-client-ts",
   "repository": "github:manualpilot/docker-client-ts",
   "keywords": [
-    "docker"
+    "docker",
+    "client",
+    "typescript"
   ],
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "files": [
-    "dist",
+    "lib",
     "package.json",
     "tsconfig.json",
     "README.md",
     "LICENSE"
   ],
   "type": "module",
-  "packageManager": "pnpm@9.10.0",
+  "packageManager": "pnpm@9.12.3",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=22",
     "pnpm": ">=9"
   },
   "scripts": {
-    "prebuild": "rm -rf ./dist",
     "build": "tsc --project tsconfig-build.json",
     "postbuild": "tsc-alias --project tsconfig-build.json",
     "format": "biome check --verbose --write --unsafe",
-    "pregenerate": "rm -rf ./dist ./src",
+    "pregenerate": "rm -rf ./lib",
     "generate": "node ./generator/generator.mjs && node ./generator/compose.mjs",
     "postgenerate": "pnpm run format",
     "test": "jest",

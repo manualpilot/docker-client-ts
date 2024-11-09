@@ -1,4 +1,4 @@
-import { DockerClient } from "../src";
+import { DockerClient } from "../lib";
 import { collect } from "./utils";
 
 test("terminal", async () => {

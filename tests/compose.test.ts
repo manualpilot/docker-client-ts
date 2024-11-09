@@ -1,6 +1,6 @@
 import * as YAML from "yaml";
 
-import { ComposeSpecificationSchema } from "../src";
+import { ComposeSpecificationSchema } from "../lib";
 
 // TODO: is there an equivalent of python dedent in js?
 test("compose", async () => {

@@ -2,6 +2,7 @@
 .env
 .envrc
 .npmrc
-dist
+*.tsbuildinfo
+*.tgz
 node_modules
-src
+lib

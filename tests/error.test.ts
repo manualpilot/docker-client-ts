@@ -1,5 +1,5 @@
-import { DockerClient } from "../src";
-import { LogsError } from "../src/tags/container";
+import { DockerClient } from "../lib";
+import { LogsError } from "../lib/tags/container";
 
 test("error", async () => {
   const client = await DockerClient({

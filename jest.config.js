@@ -7,6 +7,6 @@ export default {
     "^.+.ts$": ["ts-jest", { useESM: true }],
   },
   moduleNameMapper: {
-    '^~/(.*)$': '<rootDir>/src/$1',
+    '^~/(.*)$': '<rootDir>/lib/$1',
   },
 };

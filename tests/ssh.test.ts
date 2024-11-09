@@ -2,7 +2,7 @@ import { createConnection } from "node:net";
 
 import { Server, utils } from "ssh2";
 
-import { DockerClient } from "../src";
+import { DockerClient } from "../lib";
 
 const SSH_PORT = 34567;
 
