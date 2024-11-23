@@ -68,7 +68,8 @@ async function main() {
       const output = {
         errors: [],
         stream: outputStream && !props.chunked,
-        websocket: false,
+        websocket: props.websocket === true,
+        upgrade: false,
         empty: false,
         noChange: false,
         chunked: props.chunked || (responses["101"] === undefined && outputStream),
@@ -78,7 +79,7 @@ async function main() {
         const code = parseInt(codeStr);
 
         if (code === 101) {
-          output.websocket = true;
+          output.upgrade = true;
         }
 
         else if (code === 200 || code === 201) {
@@ -157,9 +158,15 @@ async function main() {
         method: props.method,
         path: props.path,
         chunked: props.output.chunked,
+        websocket: props.output.websocket,
         upgrade: props.output.stream,
         path_has_params: props.path.includes("{") && props.path.includes("}"),
       };
+
+      if (attribs.websocket) {
+        // TODO: not sure how to support websocket, container exits as soon as we attach
+        continue;
+      }
 
       if ("input" in props) {
         attribs.input_name = `${name}Input`;

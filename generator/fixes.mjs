@@ -31,9 +31,8 @@ export function applyFixes(schema) {
 
   // it is not possible to infer that this endpoint returns a stream
   schema.paths["/images/create"].post.chunked = true;
-
-  //
   schema.paths["/containers/{id}/logs"].get.chunked = true;
+  schema.paths["/containers/{id}/attach/ws"].get.websocket = true;
 
   for (const path in schema.paths) {
     for (const endpoint in schema.paths[path]) {

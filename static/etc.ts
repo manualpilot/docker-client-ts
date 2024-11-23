@@ -78,16 +78,14 @@ export function chunked(resp: Dispatcher.ResponseData): Observable<string> {
   return stream.asObservable();
 }
 
-export type TerminalSession = {
-  // write commands to this stream
+export type CombinedTerminalSession = {
   input: ReplaySubject<string>;
-  // combined stdout/stderr output will through on this stream
   output: ReplaySubject<string>;
   close: () => void;
 };
 
 // WARN: this doesn't handle TTY mode yet
-export function terminal(resp: Dispatcher.UpgradeData): TerminalSession {
+export function terminal(resp: Dispatcher.UpgradeData): CombinedTerminalSession {
   const input = new ReplaySubject<string>(30);
   const output = new ReplaySubject<string>(30);
 

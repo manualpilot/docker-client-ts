@@ -1,3 +1,8 @@
+doit:
+  pnpm run generate && \
+    pnpm run test && \
+    pnpm run build  # dist files interfere with jest
+
 bump-version level:
   #!/bin/bash
 
@@ -23,3 +28,6 @@ create-release:
     --verify-tag \
     --title "${version}" \
     --repo manualpilot/docker-client-ts
+
+reverse-proxy:
+  caddy reverse-proxy --from http://localhost:8888 --to unix//var/run/docker.sock
