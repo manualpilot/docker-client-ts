@@ -9,9 +9,10 @@
     "client",
     "typescript"
   ],
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
+    "dist",
     "lib",
     "package.json",
     "tsconfig.json",
@@ -26,6 +27,7 @@
     "pnpm": ">=9"
   },
   "scripts": {
+    "prebuild": "rm -rf *.tsbuildinfo",
     "build": "tsc --project tsconfig-build.json",
     "postbuild": "tsc-alias --project tsconfig-build.json",
     "format": "biome check --verbose --write --unsafe",

@@ -6,5 +6,6 @@
 *.tsbuildinfo
 *.tgz
 *.zip
-node_modules
+dist
 lib
+node_modules
