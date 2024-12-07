@@ -1,7 +1,7 @@
 import { from as toIterable } from "ix/asynciterable";
 import { type Observable, ReplaySubject } from "rxjs";
 import { type Dispatcher, Pool } from "undici";
-import { setupSSH } from "./ssh";
+import { setupSSH } from "~/ssh";
 
 export type DockerClientParams = {
   baseURL: URL;

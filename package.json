@@ -27,7 +27,7 @@
     "pnpm": ">=9"
   },
   "scripts": {
-    "prebuild": "rm -rf *.tsbuildinfo",
+    "prebuild": "rm -rf ./dist ./*.tsbuildinfo",
     "build": "tsc --project tsconfig-build.json",
     "postbuild": "tsc-alias --project tsconfig-build.json",
     "format": "biome check --verbose --write --unsafe",

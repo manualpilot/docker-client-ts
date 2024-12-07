@@ -4,5 +4,8 @@
     "rootDir": "lib",
     "outDir": "dist",
     "declarationDir": "dist"
+  },
+  "tsc-alias": {
+    "resolveFullPaths": true
   }
 }
