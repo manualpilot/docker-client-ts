@@ -20,11 +20,10 @@
     "LICENSE"
   ],
   "type": "module",
-  "packageManager": "pnpm@9.12.3",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=22",
-    "pnpm": ">=9"
+    "npm": ">=10"
   },
   "scripts": {
     "prebuild": "rm -rf ./dist ./*.tsbuildinfo",
@@ -33,7 +32,7 @@
     "format": "biome check --verbose --write --unsafe",
     "pregenerate": "rm -rf ./lib",
     "generate": "node ./generator/generator.mjs && node ./generator/compose.mjs",
-    "postgenerate": "pnpm run format",
+    "postgenerate": "npm run format",
     "test": "jest",
     "prepare": "husky"
   },

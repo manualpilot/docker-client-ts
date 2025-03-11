@@ -1,4 +1,4 @@
 rm -rf ./dist ./src
-pnpm run generate
-pnpm run build
-pnpm run test
+npm run generate
+npm run build
+npm run test

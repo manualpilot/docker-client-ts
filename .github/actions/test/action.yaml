@@ -7,9 +7,8 @@ runs:
     - uses: actions/setup-node@v4
       with:
         node-version-file: package.json
-    - uses: pnpm/action-setup@v4
     - shell: bash
       run: |
-        pnpm install --frozen-lockfile
-        pnpm run generate
-        pnpm run test
+        npm install --frozen-lockfile
+        npm run generate
+        npm run test

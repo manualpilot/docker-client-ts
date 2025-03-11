@@ -1,7 +1,7 @@
 doit:
-  pnpm run generate && \
-    pnpm run test && \
-    pnpm run build  # dist files interfere with jest
+  npm run generate && \
+    npm run test && \
+    npm run build  # dist files interfere with jest
 
 bump-version level:
   #!/bin/bash

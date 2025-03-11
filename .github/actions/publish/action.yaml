@@ -14,7 +14,6 @@ runs:
       with:
         node-version-file: package.json
         registry-url: https://registry.npmjs.org/
-    - uses: pnpm/action-setup@v4
     - uses: extractions/setup-just@v2
     - name: publish to npm
       shell: bash
@@ -22,10 +21,10 @@ runs:
         NODE_AUTH_TOKEN: ${{inputs.node-auth-token}}
       run: |
         echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > .npmrc
-        pnpm install --frozen-lockfile
-        pnpm run generate
-        pnpm run build
-        pnpm publish --tag latest --no-git-checks --access=public
+        npm install --frozen-lockfile
+        npm run generate
+        npm run build
+        npm publish --tag latest --access=public
     - name: github release
       shell: bash
       env:
