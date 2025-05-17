@@ -14,10 +14,11 @@ bump-version level:
   jq ".version = \"${next_version}\"" package.json > package.temp.json
   mv package.temp.json package.json
 
-  git add package.json
-  git commit -m "version ${next_version}"
-  git tag $(cat package.json | jq -r .version)
-  git push --atomic origin main $(cat package.json | jq -r .version)
+  npm install
+#  git add package.json package-lock.json
+#  git commit -m "version ${next_version}"
+#  git tag $(cat package.json | jq -r .version)
+#  git push --atomic origin main $(cat package.json | jq -r .version)
 
 create-release:
   #!/bin/bash

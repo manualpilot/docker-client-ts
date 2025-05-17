@@ -8,7 +8,7 @@ import { fetch } from "undici";
 
 import { applyFixes } from "./fixes.mjs";
 
-const SCHEMA_URL = "https://docs.docker.com/reference/api/engine/version/v1.48.yaml"
+const SCHEMA_URL = "https://docs.docker.com/reference/api/engine/version/v1.49.yaml"
 
 async function main() {
 
@@ -24,11 +24,6 @@ async function main() {
       const props = schema.paths[path][method];
       const { parameters, responses, operationId } = props;
       let { tags } = props;
-
-      // TODO: 1.48 removed the tag from image export for some reason...
-      if (tags === undefined && operationId === "ImageGet") {
-        tags = ["Image"]
-      }
 
       if (tags.length > 1) {
         throw Error(`multiple tags in ${path}:${method}`);
