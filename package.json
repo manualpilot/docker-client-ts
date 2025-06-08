@@ -1,7 +1,7 @@
 {
   "name": "docker-client-ts",
   "description": "Auto generated client for the Docker Engine API with a fluent interface and strong typings",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "homepage": "https://github.com/manualpilot/docker-client-ts",
   "repository": "github:manualpilot/docker-client-ts",
   "keywords": [
