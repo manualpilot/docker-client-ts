@@ -8,7 +8,7 @@ import { fetch } from "undici";
 
 import { applyFixes } from "./fixes.mjs";
 
-const SCHEMA_URL = "https://docs.docker.com/reference/api/engine/version/v1.49.yaml"
+const SCHEMA_URL = "https://docs.docker.com/reference/api/engine/version/v1.50.yaml"
 
 async function main() {
 
