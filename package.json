@@ -42,14 +42,14 @@
     "npm-check-updates": "^18.0.1",
     "rxjs": "^7.8.2",
     "ssh2": "^1.16.0",
-    "undici": "^7.9.0",
-    "zod": "^3.24.4"
+    "undici": "^7.10.0",
+    "zod": "^3.25.56"
   },
   "devDependencies": {
-    "@apidevtools/json-schema-ref-parser": "^12.0.2",
+    "@apidevtools/json-schema-ref-parser": "^13.0.3",
     "@biomejs/biome": "^1.9.4",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.15.18",
+    "@types/node": "^22.15.30",
     "@types/nunjucks": "^3.2.6",
     "@types/ssh2": "^1.15.5",
     "husky": "^9.1.7",
