@@ -1,0 +1,58 @@
+name: release
+on:
+  workflow_dispatch:
+    inputs:
+      level:
+        description: semver level to bump
+        type: choice
+        required: true
+        default: patch
+        options:
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+
+# never let two releases race for the same version
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      # bump-version pushes to main, so refuse to run from anywhere else
+      - name: check the ref
+        if: github.ref_name != 'main'
+        env:
+          REF: ${{ github.ref_name }}
+        run: |
+          echo "::error::releases must be dispatched from main, got ${REF}"
+          exit 1
+
+      - uses: actions/checkout@v7
+
+      - uses: extractions/setup-just@v4
+
+      # everything that can fail runs before the tag is pushed: an unpublishable
+      # commit should never leave a dangling tag behind
+      - uses: ./.github/actions/test
+
+      - name: build
+        run: npm run build
+
+      - name: bump the version, tag and push
+        env:
+          LEVEL: ${{ inputs.level }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          just bump-version "${LEVEL}"
+
+      - uses: ./.github/actions/publish
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          node-auth-token: ${{ secrets.NODE_AUTH_TOKEN }}

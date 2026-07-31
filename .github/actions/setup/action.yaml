@@ -1,0 +1,27 @@
+name: setup
+description: install node, restore dependencies and regenerate the api spec
+
+inputs:
+  registry-url:
+    description: npm registry to configure auth against; only needed when publishing
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v7
+      with:
+        node-version-file: package.json
+        registry-url: ${{ inputs.registry-url }}
+        cache: npm
+
+    - name: install dependencies
+      shell: bash
+      run: npm ci
+
+    # src/spec.ts is generated and gitignored, so every job needs this before
+    # it can typecheck, test or build
+    - name: generate the api spec
+      shell: bash
+      run: npm run generate

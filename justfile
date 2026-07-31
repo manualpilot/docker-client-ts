@@ -3,22 +3,21 @@ doit:
     npm run test && \
     npm run build
 
+# run by the release workflow: bumps package.json, tags and pushes both
 bump-version level:
   #!/bin/bash
 
-  set -x
+  set -euo pipefail
 
-  this_version=$(cat package.json | jq -r .version)
-  next_version=$(./node_modules/.bin/semver -i {{level}} ${this_version})
+  # --no-git-tag-version keeps npm out of git; it only rewrites the version in
+  # package.json and package-lock.json, leaving the dependency tree untouched
+  npm version {{level}} --no-git-tag-version
+  version=$(jq -r .version package.json)
 
-  jq ".version = \"${next_version}\"" package.json > package.temp.json
-  mv package.temp.json package.json
-
-  npm install
   git add package.json package-lock.json
-  git commit -m "version ${next_version}"
-  git tag $(cat package.json | jq -r .version)
-  git push --atomic origin main $(cat package.json | jq -r .version)
+  git commit -m "version ${version}"
+  git tag "${version}"
+  git push --atomic origin main "${version}"
 
 create-release:
   #!/bin/bash
@@ -28,6 +27,7 @@ create-release:
   gh release create "${version}" dist.zip \
     --verify-tag \
     --title "${version}" \
+    --generate-notes \
     --repo manualpilot/docker-client-ts
 
 reverse-proxy:

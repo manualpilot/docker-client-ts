@@ -1,32 +1,37 @@
 name: run publish
+description: build the package, publish it to npm and cut a github release for the current tag
 
 inputs:
   github-token:
-    description: the github token
+    description: token used to create the github release
+    required: true
   node-auth-token:
-    description: node auth token
+    description: npm token used to publish the package
+    required: true
 
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
+    # writes an .npmrc that reads the token from NODE_AUTH_TOKEN, so the token
+    # itself never lands on disk
+    - uses: ./.github/actions/setup
       with:
-        node-version-file: package.json
         registry-url: https://registry.npmjs.org/
-    - uses: extractions/setup-just@v2
+
+    - uses: extractions/setup-just@v4
+
+    - name: build
+      shell: bash
+      run: npm run build
+
     - name: publish to npm
       shell: bash
       env:
-        NODE_AUTH_TOKEN: ${{inputs.node-auth-token}}
-      run: |
-        echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > .npmrc
-        npm install --frozen-lockfile
-        npm run generate
-        npm run build
-        npm publish --tag latest --access=public
+        NODE_AUTH_TOKEN: ${{ inputs.node-auth-token }}
+      run: npm publish --tag latest --access public
+
     - name: github release
       shell: bash
       env:
-        GITHUB_TOKEN: ${{inputs.github-token}}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
       run: just create-release
