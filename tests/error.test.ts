@@ -1,5 +1,10 @@
-import { DockerClient } from "../lib";
-import { LogsError } from "../lib/tags/container";
+import { expect, test } from "vitest";
+
+import { DockerClient, type OperationError, ops, toZod } from "../src";
+
+// the per-tag schema modules are gone; every operation's schemas now hang off
+// the spec and are converted on demand
+const LogsError = toZod<OperationError<"Container", "Logs">>(ops.Container.Logs.output.error);
 
 test("error", async () => {
   const client = await DockerClient({

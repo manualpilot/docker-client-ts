@@ -2,26 +2,25 @@
   "compilerOptions": {
     "declaration": true,
     "rootDir": ".",
-    "baseUrl": ".",
     "sourceMap": true,
     "composite": true,
     "strict": true,
     "skipLibCheck": true,
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "allowSyntheticDefaultImports": true,
     "lib": [
       "ESNext"
     ],
     "paths": {
       "~/*": [
-        "lib/*"
+        "./src/*"
       ]
     }
   },
   "exclude": [],
   "include": [
-    "lib"
+    "src"
   ]
 }

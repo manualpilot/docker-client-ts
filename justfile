@@ -1,7 +1,7 @@
 doit:
   npm run generate && \
     npm run test && \
-    npm run build  # dist files interfere with jest
+    npm run build
 
 bump-version level:
   #!/bin/bash
@@ -23,7 +23,7 @@ bump-version level:
 create-release:
   #!/bin/bash
 
-  zip -r dist.zip package.json tsconfig.json README.md LICENSE dist lib
+  zip -r dist.zip package.json tsconfig.json README.md LICENSE dist src
   version=$(cat package.json | jq -r .version)
   gh release create "${version}" dist.zip \
     --verify-tag \

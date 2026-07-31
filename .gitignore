@@ -7,5 +7,5 @@
 *.tgz
 *.zip
 dist
-lib
 node_modules
+src/spec.ts

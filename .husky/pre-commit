@@ -1,4 +1,4 @@
-rm -rf ./dist ./src
+rm -rf ./dist
 npm run generate
 npm run build
 npm run test

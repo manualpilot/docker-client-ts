@@ -1,13 +1,14 @@
 import { createConnection } from "node:net";
 
 import { Server, utils } from "ssh2";
+import { type Mock, expect, test, vi } from "vitest";
 
-import { DockerClient } from "../lib";
+import { DockerClient } from "../src";
 
 const SSH_PORT = 34567;
 
 test("ssh", async () => {
-  const onPiped = jest.fn();
+  const onPiped = vi.fn();
   const server = await startServer(onPiped);
 
   const client = await DockerClient({
@@ -38,7 +39,7 @@ async function stopServer(server: Server) {
   });
 }
 
-async function startServer(onPiped: jest.Mock) {
+async function startServer(onPiped: Mock) {
   return new Promise<Server>((resolve) => {
     const server = new Server({ hostKeys: [utils.generateKeyPairSync("ed25519").private] }, (client) => {
       client
