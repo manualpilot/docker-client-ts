@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 
-import { DockerClient, type OperationError, ops, toZod } from "../src";
+import { DockerClient, type OperationError, ops, toZod } from "../src/index.ts";
 
 // the per-tag schema modules are gone; every operation's schemas now hang off
 // the spec and are converted on demand

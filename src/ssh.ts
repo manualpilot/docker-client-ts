@@ -6,7 +6,7 @@ import { join as joinPath } from "node:path";
 
 import { Client } from "ssh2";
 
-import { type DockerClientParams, getLogger } from "~/etc";
+import { type DockerClientParams, getLogger } from "./etc.ts";
 
 type Connection = {
   id: string;
@@ -31,7 +31,7 @@ export async function setupSSH(params: DockerClientParams): Promise<SSHContext> 
     await access(socketPath);
     await unlink(socketPath);
     logger.log(`[DockerClient] unlinked socket @ ${socketPath}`);
-  } catch (e) {
+  } catch (_e) {
     // nothing to do, it doesn't exist
   }
 

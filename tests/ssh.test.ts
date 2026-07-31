@@ -1,9 +1,9 @@
 import { createConnection } from "node:net";
 
 import { Server, utils } from "ssh2";
-import { type Mock, expect, test, vi } from "vitest";
+import { expect, type Mock, test, vi } from "vitest";
 
-import { DockerClient } from "../src";
+import { DockerClient } from "../src/index.ts";
 
 const SSH_PORT = 34567;
 

@@ -7,17 +7,16 @@
     "strict": true,
     "skipLibCheck": true,
     "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    // import siblings by their real on-disk name ("./etc.ts"); tsc rewrites the
+    // extension to ".js" on emit, so the shipped JS stays valid Node ESM
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
     "allowSyntheticDefaultImports": true,
     "lib": [
       "ESNext"
-    ],
-    "paths": {
-      "~/*": [
-        "./src/*"
-      ]
-    }
+    ]
   },
   "exclude": [],
   "include": [

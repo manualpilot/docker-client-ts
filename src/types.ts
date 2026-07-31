@@ -1,8 +1,8 @@
 import type { FromSchema } from "json-schema-to-ts";
 import type { Observable } from "rxjs";
 
-import type { CombinedTerminalSession } from "~/etc";
-import type { ops } from "~/spec";
+import type { CombinedTerminalSession } from "./etc.ts";
+import type { ops } from "./spec.ts";
 
 type Operations = typeof ops;
 

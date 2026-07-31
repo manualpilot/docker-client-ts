@@ -1,11 +1,11 @@
-import { buildAPI } from "~/client";
-import { type DockerClientParams, getPool } from "~/etc";
+import { buildAPI } from "./client.ts";
+import { type DockerClientParams, getPool } from "./etc.ts";
 
-export { type ComposeSpecification, ComposeSpecificationSchema } from "~/compose";
-export type { CombinedTerminalSession, DockerClientParams } from "~/etc";
-export { toZod } from "~/schema";
-export { ops } from "~/spec";
-export type { DockerAPI, OperationError, OperationInput, OperationOutput } from "~/types";
+export { type ComposeSpecification, ComposeSpecificationSchema } from "./compose.ts";
+export type { CombinedTerminalSession, DockerClientParams } from "./etc.ts";
+export { toZod } from "./schema.ts";
+export { ops } from "./spec.ts";
+export type { DockerAPI, OperationError, OperationInput, OperationOutput } from "./types.ts";
 
 export type DockerClientType = Awaited<ReturnType<typeof DockerClient>>;
 

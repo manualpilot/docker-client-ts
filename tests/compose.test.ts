@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 import * as YAML from "yaml";
 
-import { ComposeSpecificationSchema } from "../src";
+import { ComposeSpecificationSchema } from "../src/index.ts";
 
 // TODO: is there an equivalent of python dedent in js?
 test("compose", async () => {

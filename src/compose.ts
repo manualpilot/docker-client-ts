@@ -1,8 +1,8 @@
 import type { FromSchema } from "json-schema-to-ts";
 import type * as z from "zod";
 
-import { toZod } from "~/schema";
-import { composeSpec } from "~/spec";
+import { toZod } from "./schema.ts";
+import { composeSpec } from "./spec.ts";
 
 export type ComposeSpecification = FromSchema<typeof composeSpec>;
 

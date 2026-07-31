@@ -1,9 +1,9 @@
 import type { Dispatcher, Pool } from "undici";
 
-import { chunked, sub, terminal } from "~/etc";
-import { toZod } from "~/schema";
-import { ops } from "~/spec";
-import type { DockerAPI } from "~/types";
+import { chunked, sub, terminal } from "./etc.ts";
+import { toZod } from "./schema.ts";
+import { ops } from "./spec.ts";
+import type { DockerAPI } from "./types.ts";
 
 type OperationSpec = {
   method: string;

@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 
-import { DockerClient } from "../src";
-import { collect } from "./utils";
+import { DockerClient } from "../src/index.ts";
+import { collect } from "./utils.ts";
 
 test("terminal", async () => {
   const client = await DockerClient({
