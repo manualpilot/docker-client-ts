@@ -24,8 +24,6 @@ runs:
 
     - name: publish to npm
       shell: bash
-      env:
-        NODE_AUTH_TOKEN: ${{ inputs.node-auth-token }}
       run: npm publish --tag latest --access public
 
     - name: github release
