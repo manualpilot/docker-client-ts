@@ -18,8 +18,6 @@ runs:
       with:
         registry-url: https://registry.npmjs.org/
 
-    - uses: extractions/setup-just@v4
-
     - name: build
       shell: bash
       run: npm run build
@@ -34,4 +32,15 @@ runs:
       shell: bash
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
-      run: just create-release
+        REPO: ${{ github.repository }}
+      run: |
+        set -euo pipefail
+
+        zip -r dist.zip package.json tsconfig.json README.md LICENSE dist src
+        version=$(jq -r .version package.json)
+
+        gh release create "${version}" dist.zip \
+          --verify-tag \
+          --title "${version}" \
+          --generate-notes \
+          --repo "${REPO}"

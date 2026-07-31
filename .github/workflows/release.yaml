@@ -35,8 +35,6 @@ jobs:
 
       - uses: actions/checkout@v7
 
-      - uses: extractions/setup-just@v4
-
       # everything that can fail runs before the tag is pushed: an unpublishable
       # commit should never leave a dangling tag behind
       - uses: ./.github/actions/test
@@ -48,9 +46,20 @@ jobs:
         env:
           LEVEL: ${{ inputs.level }}
         run: |
+          set -euo pipefail
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          just bump-version "${LEVEL}"
+
+          # --no-git-tag-version keeps npm out of git; it only rewrites the version in
+          # package.json and package-lock.json, leaving the dependency tree untouched
+          npm version "${LEVEL}" --no-git-tag-version
+          version=$(jq -r .version package.json)
+
+          git add package.json package-lock.json
+          git commit -m "version ${version}"
+          git tag "${version}"
+          git push --atomic origin main "${version}"
 
       - uses: ./.github/actions/publish
         with:
