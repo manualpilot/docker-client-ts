@@ -6,6 +6,7 @@
 // `FromSchema`, so the runtime validation and the static types can't drift.
 
 import { writeFile } from "node:fs/promises";
+import { isDeepStrictEqual } from "node:util";
 
 import { dereference } from "@apidevtools/json-schema-ref-parser";
 import { fetch } from "undici";
@@ -69,6 +70,10 @@ const SCHEMA_MAP_KEYS = new Set(["properties", "patternProperties", "definitions
 
 // keywords whose value is an array of schemas
 const SCHEMA_ARRAY_KEYS = new Set(["allOf", "anyOf", "oneOf", "prefixItems"]);
+
+// keywords a sealed composition may use; anything else could evaluate
+// properties in ways a flat object can't express
+const SEALABLE_KEYS = new Set(["type", "properties", "patternProperties", "required"]);
 
 async function main() {
   const engine = YAML.parse(await (await fetch(ENGINE_SCHEMA_URL)).text());
@@ -248,7 +253,55 @@ function strip(schema) {
     }
   }
 
-  return out;
+  return out.unevaluatedProperties === undefined ? out : seal(out);
+}
+
+// zod's fromJSONSchema rejects `unevaluatedProperties`, which compose uses to
+// close an `allOf` of object fragments (`service` = `container_spec` +
+// `workload_spec` + its own properties). When every fragment only declares
+// properties, merging them into one object and turning `unevaluatedProperties`
+// into `additionalProperties` accepts exactly the same documents.
+function seal(schema) {
+  const { allOf = [], unevaluatedProperties, ...own } = schema;
+  const parts = [own, ...allOf];
+
+  for (const part of parts) {
+    const unsupported = Object.keys(part).filter((key) => !SEALABLE_KEYS.has(key));
+    if (unsupported.length > 0 || (part.type !== undefined && part.type !== "object")) {
+      throw Error(`can't flatten unevaluatedProperties over ${JSON.stringify(Object.keys(part))}`);
+    }
+  }
+
+  const properties = {};
+  const patternProperties = {};
+  const required = new Set();
+
+  for (const part of parts) {
+    mergeSchemaMap(properties, part.properties);
+    mergeSchemaMap(patternProperties, part.patternProperties);
+    for (const name of part.required ?? []) {
+      required.add(name);
+    }
+  }
+
+  return {
+    type: "object",
+    properties,
+    ...(Object.keys(patternProperties).length > 0 ? { patternProperties } : {}),
+    ...(required.size > 0 ? { required: [...required] } : {}),
+    additionalProperties: unevaluatedProperties,
+  };
+}
+
+// a name declared by more than one fragment has to satisfy all of them
+function mergeSchemaMap(target, source = {}) {
+  for (const [name, sub] of Object.entries(source)) {
+    if (!(name in target) || isDeepStrictEqual(target[name], sub)) {
+      target[name] = sub;
+    } else {
+      target[name] = { allOf: [target[name], sub] };
+    }
+  }
 }
 
 function render(operations, composeSpec) {

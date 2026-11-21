@@ -39,17 +39,17 @@
     "json-schema-to-ts": "^3.1.1",
     "rxjs": "^7.8.2",
     "ssh2": "^1.17.0",
-    "undici": "^8.10.0",
-    "zod": "^4.4.3"
+    "undici": "^8.13.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@apidevtools/json-schema-ref-parser": "^16.0.0",
-    "@biomejs/biome": "^2.5.9",
-    "@types/node": "^24.13.3",
-    "@types/ssh2": "^1.15.5",
+    "@apidevtools/json-schema-ref-parser": "^16.0.8",
+    "@biomejs/biome": "^2.6.8",
+    "@types/node": "^24.19.2",
+    "@types/ssh2": "^1.15.6",
     "husky": "^9.1.7",
     "typescript": "^7.0.2",
-    "vitest": "^4.1.11",
-    "yaml": "^2.9.0"
+    "vitest": "^5.1.1",
+    "yaml": "^2.9.1"
   }
 }
